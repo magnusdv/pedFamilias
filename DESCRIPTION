@@ -1,0 +1,20 @@
+Type: Package
+Package: pedFamilias
+Title: Convert Pedigree Formats Between Pedsuite and Familias
+Version: 0.1.0
+Authors@R: 
+    person("Magnus Dehli", "Vigeland", , "m.d.vigeland@medisin.uio.no", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9134-4962"))
+Description: Read and write .fam files associated with the 'Familias'
+    software, based on the pedigree format used in the 'pedsuite'.
+License: GPL (>= 3)
+Depends: 
+    pedtools,
+    R (>= 4.1.0)
+Imports: 
+    pedmut
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
