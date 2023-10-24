@@ -23,7 +23,7 @@ be identified and parsed. If \code{NA} (the default), the DVI section is
 included if it is present in the input file.}
 
 \item{Xchrom}{A logical. If TRUE, the \code{chrom} attribute of all markers will
-be set to "X". (Default = FALSE.)}
+be set to "X". Default = FALSE.}
 
 \item{prefixAdded}{A string used as prefix when adding missing parents.}
 

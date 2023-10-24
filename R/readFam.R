@@ -9,7 +9,7 @@
 #'   be identified and parsed. If `NA` (the default), the DVI section is
 #'   included if it is present in the input file.
 #' @param Xchrom A logical. If TRUE, the `chrom` attribute of all markers will
-#'   be set to "X". (Default = FALSE.)
+#'   be set to "X". Default = FALSE.
 #' @param prefixAdded A string used as prefix when adding missing parents.
 #' @param fallbackModel Either "equal" or "proportional"; the mutation model to
 #'   be applied (with the same overall rate) when a specified model fails for

@@ -4,9 +4,17 @@
 \name{pedFamilias-package}
 \alias{pedFamilias}
 \alias{pedFamilias-package}
-\title{pedFamilias: Convert Pedigree Formats Between Pedsuite and Familias}
+\title{pedFamilias: Import and Export 'Familias' Files}
 \description{
-Read and write .fam files associated with the 'Familias' software, based on the pedigree format used in the 'pedsuite'.
+Tools for exchanging pedigree data between the 'pedsuite' packages and the 'Familias' software for forensic kinship computations \doi{10.1016/s0379-0738(00)00147-x}. Also supports .fam files exported from the DVI module of 'Familias'.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/magnusdv/pedFamilias}
+  \item Report bugs at \url{https://github.com/magnusdv/pedFamilias/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Magnus Dehli Vigeland \email{m.d.vigeland@medisin.uio.no} (\href{https://orcid.org/0000-0002-9134-4962}{ORCID})

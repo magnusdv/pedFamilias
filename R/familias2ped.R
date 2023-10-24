@@ -1,12 +1,7 @@
-#' Convert `Familias` objects to `ped` format
+#' Convert `Familias` R objects to `ped`
 #'
-#' `Familias` is a widely used software for forensic kinship computations, which
-#' also features an accompanying R package (also called `Familias`). The
-#' function documented here converts pedigrees and marker data from the R
-#' version of `Familias` to [pedtools::ped()] format, used by `forrel`. This may
-#' be of interest for specialized computations not implemented in `Familias`,
-#' e.g. conditional simulations. Note: For importing ".fam" files created by
-#' (the stand-alone) `Familias`, see [readFam()].
+#' Convert pedigrees and marker data from the R version of `Familias` into the
+#' `ped` format used by the `pedsuite`.
 #'
 #' The `Familias` program represents pedigrees and marker data in a way that
 #' differs from the `ped` format in several ways, mostly because of the latter's
@@ -14,7 +9,7 @@
 #' connected pedigree, and each member must have either 0 or 2 parents. None of
 #' this is required by `FamiliasPedigree` objects. The conversion function
 #' `Familias2ped` takes care of all potential differences: It converts each
-#' `Familias` pedigree into a list of connected `ped` objects, adding missing
+#' `Familias` pedigree into a list of connected `ped` components, adding missing
 #' parents where needed.
 #'
 #' @param familiasped A `FamiliasPedigree` object or a list of such.
@@ -30,29 +25,26 @@
 #' @param prefixAdded A string used as prefix when adding missing parents.
 #'
 #' @return A `ped` object, or a list of such.
-#' @author Magnus Dehli Vigeland, Thore Egeland
 #'
-#' @seealso [readFam()]
+#' @seealso [readFam()].
 #'
 #' @references Familias is freely available from <https://familias.name>.
 #' @examples
 #'
-#' famPed = structure(
-#'   list(id = c('mother', 'daughter', 'AF'),
-#'        findex = c(0, 3, 0),
-#'        mindex = c(0, 1, 0),
-#'        sex = c('female', 'female', 'male')),
-#'   class = "FamiliasPedigree")
+#' famPed = list(id = c('mother', 'daughter', 'AF'),
+#'               findex = c(0, 3, 0),
+#'               mindex = c(0, 1, 0),
+#'               sex = c('female', 'female', 'male'))
+#' class(famPed) = "FamiliasPedigree"
 #'
 #' datamatrix = data.frame(
 #'   M1.1 = c(NA, 8, NA),
 #'   M1.2 = c(NA, 9.3, NA),
 #'   row.names = famPed$id)
 #'
-#' famLoc = structure(
-#'   list(locusname = "M1",
-#'        alleles = c("8" = 0.2, "9" = 0.5, "9.3" = 0.3)),
-#'   class = "FamiliasLocus")
+#' famLoc = list(locusname = "M1",
+#'               alleles = c("8" = 0.2, "9" = 0.5, "9.3" = 0.3))
+#' class(famLoc) = "FamiliasLocus"
 #'
 #' Familias2ped(famPed, datamatrix, loci = famLoc, matchLoci = TRUE)
 #'
