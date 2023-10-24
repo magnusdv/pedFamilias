@@ -54,11 +54,24 @@
 #'   given for each marker
 #'   * `theta`: The `Theta/Kinship/Fst` value given for the marker database
 #'
-#'
 #' @seealso [writeFam()]
 #' @references Egeland, T., P. F. Mostad, et al. (2000). _Beyond traditional
 #'   paternity and identification cases. Selecting the most probable pedigree._
 #'   Forensic Sci Int 110(1): 47-59.
+#'
+#' @examples
+#' # Using example file 'paternity.fam' included in the package
+#' fam = system.file("extdata", "paternity.fam", package = "pedFamilias")
+#'
+#' # Read and plot
+#' peds = readFam(fam)
+#' plotPedList(peds, hatched = typedMembers, marker = 1)
+#'
+#' # Store parameters
+#' x = readFam(fam, includeParams = TRUE)
+#' x$params
+#'
+#' stopifnot(identical(x$main, peds))
 #'
 #' @importFrom pedmut mutationMatrix
 #' @export
