@@ -177,13 +177,13 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
 
   # Quick utilities
   addline = function(...) cat(..., file = fam, sep = "\n")
-  quo = function(s) sprintf('"%s"', s)
+  quo = function(s) sprintf('"%s"', s %||% "")
 
   # Preamble
   addline(quo("Output from Familias, version 3.2.8"),
           quo(sprintf("(Actually produced by R/pedsuite, %s)", format(Sys.Date(), "%d %b %Y"))),
           "3.2.8",
-          '""',
+          quo(""),
           if(dbOnly) 0 else nind)
 
   # Individuals and genotypes ---------------------------------------------
@@ -202,7 +202,7 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
 
     addline(quo(id),
             "#FALSE#",
-            paste(-1, if(dropoutConsider[id] > 0) "(Consider dropouts)"),
+            paste0(-1, if(dropoutConsider[id] > 0) " (Consider dropouts)"),
             "#FALSE#",
             ifelse(getSex(x, id) == 1, "#TRUE#", "#FALSE#"))
 
@@ -268,7 +268,7 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   addline(sprintf("#FALSE# (#Databases: 1 ;Theta/Kinship/Fst: %g )", params$theta %||% 0),
           nmar,
           "#TRUE#",
-          quo(params$dbName))
+          quo(params$dbName %||% "unknown"))
 
   takenMark = rep(FALSE, length(MARKERS))
   names(takenMark) = MARKERS
