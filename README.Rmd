@@ -1,0 +1,52 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# pedFamilias
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The purpose of **pedFamilias** is to facilitate data exchanging between the **pedsuite** packages and the [Familias](https://familias.name/) software. The main functions are `readFam()` and `writeFam()` for reading and writing .fam files associated with Familias. Notably, .fam files written with the DVI module of Familias are supported, and also database files without pedigree information. 
+
+These functions were originally part of [**forrel**](https://github.com/magnusdv/forrel), but were split out to streamline maintenance and provide a more lightweight import for other packages otherwise independent of **forrel**.
+
+## Installation
+
+You can install the development version of **pedFamilias** from GitHub with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("magnusdv/pedFamilias")
+```
+
+## Example
+```{r, message = FALSE}
+library(pedFamilias)
+```
+
+For a simple illustration of **pedFamilias** we read the example file `paternity.fam` shipped with the package:
+
+```{r paternity-load}
+fam = system.file("extdata", "paternity.fam", package = "pedFamilias")
+
+peds = readFam(fam)
+```
+
+Here are the pedigrees, including genotypes for the first marker:
+```{r paternity-peds, fig.height = 2.5, fig.width = 4.5, out.width = "60%", dpi = 300, fig.align = "center"}
+plotPedList(peds, hatched = typedMembers, marker = 1)
+```
+
+For further analysis of the data, check out the **forrel** package. For instance, the command `forrel::kinshipLR(peds)` computes the likelihood ratio.

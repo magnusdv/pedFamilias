@@ -6,7 +6,7 @@
 \alias{pedFamilias-package}
 \title{pedFamilias: Import and Export 'Familias' Files}
 \description{
-Tools for exchanging pedigree data between the 'pedsuite' packages and the 'Familias' software for forensic kinship computations \doi{10.1016/s0379-0738(00)00147-x}. Also supports .fam files exported from the DVI module of 'Familias'.
+Tools for exchanging pedigree data between the 'pedsuite' packages and the 'Familias' software for forensic kinship computations \doi{10.1016/s0379-0738(00)00147-x}. These functions were split out from the 'forrel' package to streamline maintenance and provide a lightweight alternative for other packages otherwise independent of 'forrel'.
 }
 \seealso{
 Useful links:
