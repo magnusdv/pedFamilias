@@ -4,5 +4,6 @@
 .httr-oauth
 .DS_Store
 .quarto
+cran-comments.md
 CRAN-SUBMISSION
 Rprof.out
