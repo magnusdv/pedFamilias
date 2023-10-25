@@ -1,12 +1,12 @@
-#' Read `Familias` .fam files
+#' Read Familias .fam files
 #'
-#' This function parses the content of a `Familias`-formatted ".fam" file, and
+#' This function parses the content of a .fam file exported from Familias, and
 #' converts it into suitable `ped` objects. This function does not depend on the
 #' `Familias` R package.
 #'
-#' @param famfile Path to a ".fam" file.
-#' @param useDVI A logical, indicating if the DVI section of the fam file should
-#'   be identified and parsed. If `NA` (the default), the DVI section is
+#' @param famfile Path to a .fam file.
+#' @param useDVI A logical, indicating if the DVI section of the .fam file
+#'   should be identified and parsed. If `NA` (the default), the DVI section is
 #'   included if it is present in the input file.
 #' @param Xchrom A logical. If TRUE, the `chrom` attribute of all markers will
 #'   be set to "X". Default = FALSE.
@@ -54,13 +54,14 @@
 #'   given for each marker
 #'   * `theta`: The `Theta/Kinship/Fst` value given for the marker database
 #'
-#' @seealso [writeFam()]
-#' @references Egeland, T., P. F. Mostad, et al. (2000). _Beyond traditional
-#'   paternity and identification cases. Selecting the most probable pedigree._
-#'   Forensic Sci Int 110(1): 47-59.
+#' @seealso [writeFam()].
+#'
+#' @references Egeland et al. (2000). _Beyond traditional paternity and
+#'   identification cases. Selecting the most probable pedigree._ Forensic Sci
+#'   Int 110(1): 47-59.
 #'
 #' @examples
-#' # Using example file 'paternity.fam' included in the package
+#' # Using example file "paternity.fam" included in the package
 #' fam = system.file("extdata", "paternity.fam", package = "pedFamilias")
 #'
 #' # Read and plot

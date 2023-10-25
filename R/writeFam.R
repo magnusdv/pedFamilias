@@ -1,9 +1,9 @@
-#' Convert `ped` objects to `Familias` format
+#' Export `ped` objects to .fam
 #'
-#' This function produces a .fam file readable by the `Familias` software
-#' (Egeland, Mostad et al., 2000), containing all input pedigrees and their
-#' marker data. The option `openFam = TRUE` calls `openFamilias()` to open a
-#' fresh `Familias` session with the produced file loaded.
+#' This function produces a .fam file readable by the Familias software (Egeland
+#' et al., 2000), containing all input pedigrees, their marker data and mutation
+#' models. The option `openFam = TRUE` calls `openFamilias()` to open a fresh
+#' Familias session with the produced file loaded.
 #'
 #' The following parameters are applied by default, but may be adjusted with the
 #' `params` argument:
@@ -30,20 +30,20 @@
 #' @param dbOnly A logical. If TRUE, no pedigree information is included; only
 #'   the frequency database.
 #' @param openFam A logical. If TRUE, an attempt is made to open the produced
-#'   `fam` file in an external `Familias` session. Only available on Windows
-#'   systems with a working `Familias` installation.
+#'   .fam file in an external Familias session. Only available on Windows
+#'   systems with a working Familias installation.
 #' @param FamiliasPath The path to the Familias executable. If empty, the
 #'   following are tried in order: "Familias3.exe", "C:/Program Files
 #'   (x86)/Familias3/Familias3.exe".
 #' @param verbose A logical, by default TRUE.
 #'
-#' @return The filename is returned invisibly.
+#' @return The file name is returned invisibly.
 #'
-#' @seealso [readFam()]
+#' @seealso [readFam()].
 #'
-#' @references Egeland, T., P. F. Mostad, et al. (2000). _Beyond traditional
-#'   paternity and identification cases. Selecting the most probable pedigree._
-#'   Forensic Sci Int 110(1): 47-59.
+#' @references Egeland et al. (2000). _Beyond traditional paternity and
+#'   identification cases. Selecting the most probable pedigree._ Forensic Sci
+#'   Int 110(1): 47-59.
 #'
 #' @examples
 #'

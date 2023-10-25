@@ -2,7 +2,7 @@
 % Please edit documentation in R/readFam.R
 \name{readFam}
 \alias{readFam}
-\title{Read \code{Familias} .fam files}
+\title{Read Familias .fam files}
 \usage{
 readFam(
   famfile,
@@ -16,10 +16,10 @@ readFam(
 )
 }
 \arguments{
-\item{famfile}{Path to a ".fam" file.}
+\item{famfile}{Path to a .fam file.}
 
-\item{useDVI}{A logical, indicating if the DVI section of the fam file should
-be identified and parsed. If \code{NA} (the default), the DVI section is
+\item{useDVI}{A logical, indicating if the DVI section of the .fam file
+should be identified and parsed. If \code{NA} (the default), the DVI section is
 included if it is present in the input file.}
 
 \item{Xchrom}{A logical. If TRUE, the \code{chrom} attribute of all markers will
@@ -75,12 +75,12 @@ given for each marker
 }
 }
 \description{
-This function parses the content of a \code{Familias}-formatted ".fam" file, and
+This function parses the content of a .fam file exported from Familias, and
 converts it into suitable \code{ped} objects. This function does not depend on the
 \code{Familias} R package.
 }
 \examples{
-# Using example file 'paternity.fam' included in the package
+# Using example file "paternity.fam" included in the package
 fam = system.file("extdata", "paternity.fam", package = "pedFamilias")
 
 # Read and plot
@@ -95,10 +95,10 @@ stopifnot(identical(x$main, peds))
 
 }
 \references{
-Egeland, T., P. F. Mostad, et al. (2000). \emph{Beyond traditional
-paternity and identification cases. Selecting the most probable pedigree.}
-Forensic Sci Int 110(1): 47-59.
+Egeland et al. (2000). \emph{Beyond traditional paternity and
+identification cases. Selecting the most probable pedigree.} Forensic Sci
+Int 110(1): 47-59.
 }
 \seealso{
-\code{\link[=writeFam]{writeFam()}}
+\code{\link[=writeFam]{writeFam()}}.
 }

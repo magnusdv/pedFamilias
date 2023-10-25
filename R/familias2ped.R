@@ -1,27 +1,25 @@
 #' Convert `Familias` R objects to `ped`
 #'
-#' Convert pedigrees and marker data from the R version of `Familias` into the
+#' Convert pedigrees and marker data from the `Familias` R package into the
 #' `ped` format used by the `pedsuite`.
 #'
-#' The `Familias` program represents pedigrees and marker data in a way that
-#' differs from the `ped` format in several ways, mostly because of the latter's
-#' stricter definition of a *pedigree*. A `ped` object always represent a
-#' connected pedigree, and each member must have either 0 or 2 parents. None of
-#' this is required by `FamiliasPedigree` objects. The conversion function
-#' `Familias2ped` takes care of all potential differences: It converts each
-#' `Familias` pedigree into a list of connected `ped` components, adding missing
-#' parents where needed.
+#' The definition of a *pedigree* in Familias is more liberal than that
+#' implemented in the `pedsuite`, which requires that each `ped` object is a
+#' connected pedigree, and that each member has either 0 or 2 parents. The
+#' conversion function `Familias2ped` takes care of all potential differences.
+#' Specifically, it converts each `FamiliasPedigree` object into a list of
+#' connected `ped` components, and adds missing parents when needed.
 #'
 #' @param familiasped A `FamiliasPedigree` object or a list of such.
 #' @param datamatrix A data frame with two columns per marker (one for each
 #'   allele) and one row per individual.
 #' @param loci A `FamiliasLocus` object or a list of such.
-#' @param matchLoci A logical. If TRUE, the column names of `datamatrix` must be
-#'   found either within `names(loci)` or within the `name` entries of `loci`.
-#'   The column names of `datamatrix` are assumed to come in pairs with suffixes
-#'   ".1" and ".2", e.g. "TH01.1", "TH01.2", etc. If FALSE (the default) it is
-#'   assumed that the `loci` correspond to the (pairs of) columns in
-#'   `datamatrix` sequentially.
+#' @param matchLoci A logical, by default FALSE. If TRUE, the column names of
+#'   `datamatrix` are matched against `names(loci)`, or, if these are missing,
+#'   against the `name` entries of `loci`. The column names of `datamatrix` are
+#'   assumed to come in pairs with suffixes ".1" and ".2", e.g. "TH01.1",
+#'   "TH01.2", etc. If FALSE, the `loci` are assumed to be in correct order, and
+#'   no matching on marker name is done.
 #' @param prefixAdded A string used as prefix when adding missing parents.
 #'
 #' @return A `ped` object, or a list of such.
@@ -48,9 +46,9 @@
 #'
 #' Familias2ped(famPed, datamatrix, loci = famLoc, matchLoci = TRUE)
 #'
-#'
 #' @export
-Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE, prefixAdded = "added_") {
+Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
+                        prefixAdded = "added_") {
 
   ### If first argument is a list of FamiliasPedigrees, convert one at a time.
   if (is.list(familiasped) && inherits(familiasped[[1]], "FamiliasPedigree")) {

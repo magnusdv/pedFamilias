@@ -23,12 +23,12 @@ allele) and one row per individual.}
 
 \item{loci}{A \code{FamiliasLocus} object or a list of such.}
 
-\item{matchLoci}{A logical. If TRUE, the column names of \code{datamatrix} must be
-found either within \code{names(loci)} or within the \code{name} entries of \code{loci}.
-The column names of \code{datamatrix} are assumed to come in pairs with suffixes
-".1" and ".2", e.g. "TH01.1", "TH01.2", etc. If FALSE (the default) it is
-assumed that the \code{loci} correspond to the (pairs of) columns in
-\code{datamatrix} sequentially.}
+\item{matchLoci}{A logical, by default FALSE. If TRUE, the column names of
+\code{datamatrix} are matched against \code{names(loci)}, or, if these are missing,
+against the \code{name} entries of \code{loci}. The column names of \code{datamatrix} are
+assumed to come in pairs with suffixes ".1" and ".2", e.g. "TH01.1",
+"TH01.2", etc. If FALSE, the \code{loci} are assumed to be in correct order, and
+no matching on marker name is done.}
 
 \item{prefixAdded}{A string used as prefix when adding missing parents.}
 }
@@ -36,18 +36,16 @@ assumed that the \code{loci} correspond to the (pairs of) columns in
 A \code{ped} object, or a list of such.
 }
 \description{
-Convert pedigrees and marker data from the R version of \code{Familias} into the
+Convert pedigrees and marker data from the \code{Familias} R package into the
 \code{ped} format used by the \code{pedsuite}.
 }
 \details{
-The \code{Familias} program represents pedigrees and marker data in a way that
-differs from the \code{ped} format in several ways, mostly because of the latter's
-stricter definition of a \emph{pedigree}. A \code{ped} object always represent a
-connected pedigree, and each member must have either 0 or 2 parents. None of
-this is required by \code{FamiliasPedigree} objects. The conversion function
-\code{Familias2ped} takes care of all potential differences: It converts each
-\code{Familias} pedigree into a list of connected \code{ped} components, adding missing
-parents where needed.
+The definition of a \emph{pedigree} in Familias is more liberal than that
+implemented in the \code{pedsuite}, which requires that each \code{ped} object is a
+connected pedigree, and that each member has either 0 or 2 parents. The
+conversion function \code{Familias2ped} takes care of all potential differences.
+Specifically, it converts each \code{FamiliasPedigree} object into a list of
+connected \code{ped} components, and adds missing parents when needed.
 }
 \examples{
 
@@ -67,7 +65,6 @@ famLoc = list(locusname = "M1",
 class(famLoc) = "FamiliasLocus"
 
 Familias2ped(famPed, datamatrix, loci = famLoc, matchLoci = TRUE)
-
 
 }
 \references{
