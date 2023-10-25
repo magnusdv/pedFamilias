@@ -7,10 +7,10 @@ Authors@R:
            comment = c(ORCID = "0000-0002-9134-4962"))
 Description: Tools for exchanging pedigree data between the 'pedsuite'
     packages and the 'Familias' software for forensic kinship computations
-    <doi:10.1016/s0379-0738(00)00147-x>. These functions were split out
-    from the 'forrel' package to streamline maintenance and provide a
-    lightweight alternative for other packages otherwise independent of
-    'forrel'.
+    (Egeland et al. (2000) <doi:10.1016/s0379-0738(00)00147-x>). These
+    functions were split out from the 'forrel' package to streamline
+    maintenance and provide a lightweight alternative for packages
+    otherwise independent of 'forrel'.
 License: GPL (>= 3)
 URL: https://github.com/magnusdv/pedFamilias
 BugReports: https://github.com/magnusdv/pedFamilias/issues
