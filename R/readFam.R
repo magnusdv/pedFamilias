@@ -82,8 +82,11 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    fallbackModel = c("equal", "proportional"), simplify1 = TRUE,
                    deduplicate = TRUE, includeParams = FALSE, verbose = TRUE) {
 
+  if(!file.exists(famfile))
+    stop2("File not found: ", famfile)
+
   if(!endsWith(famfile, ".fam"))
-    stop("Input file must end with '.fam'", call. = FALSE)
+    stop2("Input file must end with '.fam': ", famfile)
 
   # Read entire file
   raw = readLines(famfile)
@@ -92,8 +95,8 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   # Utility function for checking integer values
   getInt = function(line, txt, value = x[line], max = Inf) {
     if(is.na(j <- suppressWarnings(as.integer(value))) || j > max)
-      stop(sprintf('Expected line %d to be %s, but found: "%s"',
-                   line, txt, value), call. = FALSE)
+      stop2(sprintf('Expected line %d to be %s, but found: "%s"',
+                   line, txt, value))
     j
   }
 
@@ -108,7 +111,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   if(is.na(useDVI))
     useDVI = "[DVI]" %in% x
   else if(useDVI && !"[DVI]" %in% x)
-    stop2("`useDVI` is TRUE, but no line equals '[DVI]'")
+    stop2("No DVI section found in input file")
 
   if(verbose)
     cat("Read DVI:", if(useDVI) "Yes\n" else "No\n")
@@ -554,7 +557,7 @@ asFamiliasPedigree = function(id, findex, mindex, sex) {
 readDVI = function(rawlines, deduplicate = TRUE, verbose = TRUE) {
   r = rawlines
   if(r[1] != "[DVI]")
-    stop("Expected the first line of DVI part to be '[DVI]', but got '", r[1], "'")
+    stop2("Expected the first line of DVI part to be '[DVI]': ", r[1])
 
   ### Parse raw lines into nested list named `dvi`
   dvi = list()
