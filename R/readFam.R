@@ -16,6 +16,8 @@
 #'   some reason. Default: "equal".
 #' @param simplify1 A logical indicating if the outer list layer should be
 #'   removed in the output if the file contains only a single pedigree.
+#' @param deduplicate A logical, only relevant for DVI. If TRUE (default),
+#'   redundant copies of the reference pedigrees are removed.
 #' @param includeParams A logical indicating if various parameters should be
 #'   read and returned in a separate list. See Value for details. Default:
 #'   FALSE.
@@ -78,7 +80,7 @@
 #' @export
 readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    fallbackModel = c("equal", "proportional"), simplify1 = TRUE,
-                   includeParams = FALSE, verbose = TRUE) {
+                   deduplicate = TRUE, includeParams = FALSE, verbose = TRUE) {
 
   if(!endsWith(famfile, ".fam"))
     stop("Input file must end with '.fam'", call. = FALSE)
@@ -442,7 +444,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     if(is.na(dvi.start))
       stop2("Expected keyword '[DVI]' not found")
     dvi.lines = raw[dvi.start:length(raw)]
-    dvi.families = readDVI(dvi.lines, verbose = verbose)
+    dvi.families = readDVI(dvi.lines, deduplicate = deduplicate, verbose = verbose)
 
     if(verbose)
       message("*** Finished DVI section ***\n")
@@ -549,7 +551,7 @@ asFamiliasPedigree = function(id, findex, mindex, sex) {
 ### Utilities for parsing DVI section ###
 #########################################
 
-readDVI = function(rawlines, verbose = TRUE) {
+readDVI = function(rawlines, deduplicate = TRUE, verbose = TRUE) {
   r = rawlines
   if(r[1] != "[DVI]")
     stop("Expected the first line of DVI part to be '[DVI]', but got '", r[1], "'")
@@ -599,6 +601,18 @@ readDVI = function(rawlines, verbose = TRUE) {
 
   names(refs) = sapply(refs, function(fam) fam[[1]][2])
   refs = lapply(refs, parseFamily, verbose = verbose)
+
+  # Deduplicate
+  if(deduplicate) {
+    if(verbose)
+      cat("Deduplicating; removing redundant `Reference pedigree`\n")
+
+    refs = lapply(refs, function(r) {
+      if(length(peds <- r$pedigrees) == 2 && identical(peds[[1]], peds[[2]]))
+        r$pedigrees = peds[[2]]
+      r
+    })
+  }
 
   # Return
   c(res, refs)

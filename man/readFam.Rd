@@ -11,6 +11,7 @@ readFam(
   prefixAdded = "added_",
   fallbackModel = c("equal", "proportional"),
   simplify1 = TRUE,
+  deduplicate = TRUE,
   includeParams = FALSE,
   verbose = TRUE
 )
@@ -33,6 +34,9 @@ some reason. Default: "equal".}
 
 \item{simplify1}{A logical indicating if the outer list layer should be
 removed in the output if the file contains only a single pedigree.}
+
+\item{deduplicate}{A logical, only relevant for DVI. If TRUE (default),
+redundant copies of the reference pedigrees are removed.}
 
 \item{includeParams}{A logical indicating if various parameters should be
 read and returned in a separate list. See Value for details. Default:
