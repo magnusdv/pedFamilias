@@ -16,6 +16,8 @@
 #'   some reason. Default: "equal".
 #' @param simplify1 A logical indicating if the outer list layer should be
 #'   removed in the output if the file contains only a single pedigree.
+#' @param deduplicate A logical, only relevant for DVI. If TRUE (default),
+#'   redundant copies of the reference pedigrees are removed.
 #' @param includeParams A logical indicating if various parameters should be
 #'   read and returned in a separate list. See Value for details. Default:
 #'   FALSE.
@@ -78,7 +80,7 @@
 #' @export
 readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    fallbackModel = c("equal", "proportional"), simplify1 = TRUE,
-                   includeParams = FALSE, verbose = TRUE) {
+                   deduplicate = TRUE, includeParams = FALSE, verbose = TRUE) {
 
   if(!endsWith(famfile, ".fam"))
     stop("Input file must end with '.fam'", call. = FALSE)
@@ -442,7 +444,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     if(is.na(dvi.start))
       stop2("Expected keyword '[DVI]' not found")
     dvi.lines = raw[dvi.start:length(raw)]
-    dvi.families = readDVI(dvi.lines, verbose = verbose)
+    dvi.families = readDVI(dvi.lines, deduplicate = deduplicate, verbose = verbose)
 
     if(verbose)
       message("*** Finished DVI section ***\n")
@@ -549,7 +551,7 @@ asFamiliasPedigree = function(id, findex, mindex, sex) {
 ### Utilities for parsing DVI section ###
 #########################################
 
-readDVI = function(rawlines, verbose = TRUE) {
+readDVI = function(rawlines, deduplicate = TRUE, verbose = TRUE) {
   r = rawlines
   if(r[1] != "[DVI]")
     stop("Expected the first line of DVI part to be '[DVI]', but got '", r[1], "'")
@@ -593,12 +595,13 @@ readDVI = function(rawlines, verbose = TRUE) {
   # Reference families
   refs_raw = dvi$DVI$`Reference Families`
   refs = refs_raw[-1] # remove 'nFamilies'
+
   stopifnot((nFam <- length(refs)) == as.integer(refs_raw[[c(1,2)]]))
   if(verbose)
-    message("\nReference families: ", nFam)
+    cat("\nReference families:", nFam, "\n")
 
   names(refs) = sapply(refs, function(fam) fam[[1]][2])
-  refs = lapply(refs, parseFamily, verbose = verbose)
+  refs = lapply(refs, function(rf) parseFamily(rf, deduplicate = deduplicate, verbose = verbose))
 
   # Return
   c(res, refs)
@@ -671,9 +674,18 @@ parseFamily = function(x, verbose = TRUE) {
   ped_list = x$Pedigrees[-1] # remove "nPedigrees"
   names(ped_list) = sapply(ped_list, function(pd) getValue(pd[[1]], iftag = "Name", NA))
 
+  # Check for duplicatation
+  dedup = deduplicate && length(ped_list) == 2 && identical(ped_list[[1]][-1], ped_list[[2]][-1])
+
   pedigrees = lapply(ped_list, function(pd) {
+    pednm = pd[[1]][2]
+    skipthis = dedup && pednm == "Reference pedigree"
+
     if(verbose)
-      message("    ", pd[[1]][2])
+      cat(sprintf("    %s%s\n", pednm, if(skipthis) " [REMOVED]" else ""))
+
+    if(skipthis)
+      return(NULL)
 
     this.id = as.character(id)
     this.sex = sex
@@ -725,6 +737,12 @@ parseFamily = function(x, verbose = TRUE) {
     # Return
     asFamiliasPedigree(this.id, this.fidx, this.midx, this.sex)
   })
+
+  # If deduplication, remove redundant layer
+  if(dedup) {
+    keepthis = which(names(pedigrees) != "Reference pedigree")
+    pedigrees = pedigrees[[keepthis]]
+  }
 
   ### datamatrix
   vecs = lapply(persons_list, function(p) dnaData2vec(p$`DNA data`))
