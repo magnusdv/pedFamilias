@@ -103,7 +103,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   # Read and print Familias version
   version = x[3]
   if(verbose)
-    message("Familias version: ", version)
+    cat("Familias version:", version, "\n")
 
   if(is.na(useDVI))
     useDVI = "[DVI]" %in% x
@@ -111,7 +111,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     stop2("`useDVI` is TRUE, but no line equals '[DVI]'")
 
   if(verbose)
-    message("Read DVI: ", if(useDVI) "Yes" else "No")
+    cat("Read DVI:", if(useDVI) "Yes\n" else "No\n")
 
   ### Individuals and genotypes
 
@@ -119,7 +119,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   nid.line = if(x[4] != "") 4 else 5
   nid = getInt(nid.line, "number of individuals") # all excluding "extras"
   if(verbose)
-    message("\nNumber of individuals (excluding 'extras'): ", nid)
+    cat("\nNumber of individuals (excluding 'extras'):", nid, "\n")
 
   # Initialise id & sex
   id = character(nid)
@@ -143,7 +143,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
     nmi = getInt(id.line + 5, sprintf('number of genotypes for "%s"', id[i]))
     if(verbose)
-      message(sprintf("  Individual '%s': Genotypes for %d markers read", id[i], nmi))
+      cat(sprintf("  Individual '%s': Genotypes for %d markers read\n", id[i], nmi))
 
     a1.lines = seq(id.line + 6, by = 3, length = nmi)
     a1.idx = as.integer(x[a1.lines]) + 1
@@ -191,7 +191,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   # Initialise list of final pedigrees
   nPed = getInt(rel.line, "number of pedigrees")
   if(verbose)
-    message("\nNumber of pedigrees: ", nPed)
+    cat("\nNumber of pedigrees:", nPed, "\n")
 
   # If no more pedigree info, finish pedigree part
   if(nPed == 0) {
@@ -218,7 +218,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
       # Print summary
       if(verbose)
-        message(sprintf(" Pedigree '%s' (%d extra females, %d extra males)", ped.name, nFem.i, nMal.i))
+        cat(sprintf(" Pedigree '%s' (%d extra females, %d extra males)\n", ped.name, nFem.i, nMal.i))
 
       # Add fixed relations
       nRel.i = as.integer(x[ped.line + 4])
@@ -230,7 +230,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
           if(grepl("Direct", x[rel.line])) {
             par.idx = as.integer(substring(x[rel.line], 1, 1)) + 1
             twins = c(twins, list(par.idx, child.idx))
-            if(verbose) message("  Twins: ", toString(id[c(par.idx, child.idx)]))
+            if(verbose) cat("  Twins:", toString(id[c(par.idx, child.idx)]), "\n")
             stop2("File contains twins - this is not supported yet")
           }
         }
@@ -274,16 +274,16 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   has.info = x[db.line + 1] == "#TRUE#"
   if(verbose) {
     if(has.info)
-      message("\nDatabase: ", x[db.line + 2])
+      cat("\nDatabase:", x[db.line + 2], "\n")
     else
-      message("")
+      cat("\n")
   }
 
   if(includeParams)
     params$dbName = if(has.info) x[db.line + 2] else ""
 
   if(verbose)
-    message("Number of loci: ", nLoc)
+    cat("Number of loci:", nLoc, "\n")
 
   loci = vector("list", nLoc)
   loc.line = db.line + 2 + has.info
@@ -418,7 +418,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
         else if(femaleMod == "stepwise")
           mut_txt = paste0(mut_txt, sprintf(", range = %.2g, rate2 = %.2g", range.fem, mutrate2.fem))
       }
-      message(sprintf("  %s: %d alleles, %s", loc.name, length(frqs), mut_txt))
+      cat(sprintf("  %s: %d alleles, %s\n", loc.name, length(frqs), mut_txt))
     }
 
     # Collect locus info
@@ -439,7 +439,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   if(useDVI) {
     if(verbose)
-      message("\n*** Reading DVI section ***")
+      cat("\n*** Reading DVI section ***\n")
     dvi.start = match("[DVI]", raw)
     if(is.na(dvi.start))
       stop2("Expected keyword '[DVI]' not found")
@@ -447,10 +447,10 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     dvi.families = readDVI(dvi.lines, deduplicate = deduplicate, verbose = verbose)
 
     if(verbose)
-      message("*** Finished DVI section ***\n")
+      cat("*** Finished DVI section ***\n\n")
 
     if(verbose)
-      message("\nConverting to `ped` format")
+      cat("Converting to `ped` format\n")
     res = lapply(dvi.families, function(fam) {
       Familias2ped(familiasped = fam$pedigrees, datamatrix = fam$datamatrix,
                    loci = loci, matchLoci = TRUE, prefixAdded = prefixAdded)
@@ -458,11 +458,11 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
     # Set all chrom attributes to X if indicated
     if(Xchrom) {
-      if(verbose) message("Changing all chromosome attributes to `X`")
+      if(verbose) cat("Changing all chromosome attributes to `X`\n")
       chrom(res, seq_along(loci)) = "X"
     }
 
-    if(verbose) message("")
+    if(verbose) cat("\n")
     return(res)
   }
 
@@ -502,13 +502,13 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   # Return
   if(!is.null(pedigrees)) {
     if(verbose)
-      message("\nConverting to `ped` format")
+      cat("\nConverting to `ped` format\n")
     res = Familias2ped(familiasped = pedigrees, datamatrix = datamatrix, loci = loci,
                        prefixAdded = prefixAdded)
 
     # Set all chrom attributes to X if indicated
     if(Xchrom) {
-      if(verbose) message("Changing all chromosome attributes to `X`")
+      if(verbose) cat("Changing all chromosome attributes to `X`\n")
       chrom(res, seq_along(loci)) = "X"
     }
 
@@ -518,14 +518,14 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   }
   else {
     if(verbose)
-      message("\nReturning database only")
+      cat("\nReturning database only\n")
     res = readFamiliasLoci(loci = loci)
   }
 
   if(includeParams)
     res = list(main = res, params = params)
 
-  if(verbose) message("")
+  if(verbose) cat("\n")
 
   res
 }
@@ -613,7 +613,7 @@ parseUnidentified = function(x, verbose = TRUE) {
 
   nPers = x[[c(1,2)]]
   if(verbose)
-    message("Unidentified persons: ", nPers)
+    cat("Unidentified persons:", nPers, "\n")
 
   if(nPers == "0")
     return(NULL)
@@ -628,7 +628,7 @@ parseUnidentified = function(x, verbose = TRUE) {
   s = asFamiliasPedigree(as.character(id), 0, 0, as.integer(sex))
 
   if(verbose)
-    for(nm in id) message("  ", nm)
+    for(nm in id) cat(" ", nm, "\n")
 
   ### datamatrix
   vecs = lapply(x, function(p) dnaData2vec(p$`DNA data`))
@@ -651,14 +651,14 @@ parseUnidentified = function(x, verbose = TRUE) {
 }
 
 # Convert a "DVI Family" into a list of `datamatrix` and `pedigrees`
-parseFamily = function(x, verbose = TRUE) {
+parseFamily = function(x, deduplicate, verbose = TRUE) {
 
   famname = x[[c(1,2)]]
   nPers = as.integer(x$Persons[[c(1,2)]])
   nPeds = as.integer(x$Pedigrees[[c(1,2)]])
 
   if(verbose)
-    message(sprintf("  %s (%d persons, %d pedigrees)", famname, nPers, nPeds))
+    cat(sprintf("  %s (%d persons, %d pedigrees)\n", famname, nPers, nPeds))
 
   ### Persons
   persons_list = x$Persons[-1]
