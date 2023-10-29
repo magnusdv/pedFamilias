@@ -221,7 +221,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
       # Print summary
       if(verbose)
-        cat(sprintf(" Pedigree '%s' (%d extra females, %d extra males)\n", ped.name, nFem.i, nMal.i))
+        cat(sprintf("  Pedigree '%s' (%d extra females, %d extra males)\n", ped.name, nFem.i, nMal.i))
 
       # Add fixed relations
       nRel.i = as.integer(x[ped.line + 4])
