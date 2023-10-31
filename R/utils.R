@@ -42,6 +42,11 @@ pluralise = function(noun, n) {
   if(n == 1) noun else sprintf("%ss", noun)
 }
 
+setnames = function(x, nms) {
+  names(x) = nms
+  x
+}
+
 .mysetdiff = function(x, y) {
   unique.default(x[match(x, y, 0L) == 0L])
 }

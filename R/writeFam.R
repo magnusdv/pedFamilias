@@ -102,7 +102,6 @@
 #'
 #' stopifnot(identical(readLines(dbfam), readLines(dbfam2)))
 #'
-#' @importFrom stats setNames
 #' @export
 writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
                     openFam = FALSE, FamiliasPath = NULL, verbose = TRUE) {
@@ -129,8 +128,8 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   nmar = length(MARKERS)
 
   # Extra param: Dropout
-  dropoutConsider = params$dropoutConsider %||% setNames(rep_len(FALSE, nind), LABS)
-  dropoutValue    = params$dropoutValue %||% setNames(rep_len(0, nmar), MARKERS)
+  dropoutConsider = params$dropoutConsider %||% setnames(rep_len(FALSE, nind), LABS)
+  dropoutValue    = params$dropoutValue %||% setnames(rep_len(0, nmar), MARKERS)
 
   # If shortcut "dropout" is used, overrule the others
   if(!is.null(dropoutInd <- params[["dropout"]])) {
@@ -160,12 +159,12 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   # Extra parameter: Database size for each marker
   dbSize = params$dbSize %||% 1000
   if(length(dbSize) == 1)
-    dbSize = setNames(rep_len(dbSize, nmar), MARKERS)
+    dbSize = setnames(rep_len(dbSize, nmar), MARKERS)
 
   # Extra parameter: Minor allele frequency for each marker
   maf = params$maf %||% 0
   if(length(maf) == 1)
-    maf = setNames(rep_len(maf, nmar), MARKERS)
+    maf = setnames(rep_len(maf, nmar), MARKERS)
 
   # Open output connection
   if(!endsWith(famfile, ".fam"))
