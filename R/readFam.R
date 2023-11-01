@@ -328,24 +328,24 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     if(includeParams) {
       patt1 = "(?<=DatabaseSize = )\\d+"
       dbsize = safeNum(regmatches(mInfo[[2]], regexpr(patt1, mInfo[[2]], perl = TRUE)))
-      names(dbsize) = loc.name
-      params$dbSize = c(params$dbSize, dbsize)
+      if(length(dbsize))
+        params$dbSize = c(params$dbSize, setnames(dbsize, loc.name))
     }
 
     # Second part II: Dropout value per marker
     if(includeParams) {
       patt2 = "(?<=Dropout probability = )[\\.\\d]+"
       drVal = safeNum(regmatches(mInfo[[2]], regexpr(patt2, mInfo[[2]], perl = TRUE)))
-      names(drVal) = loc.name
-      params$dropoutValue = c(params$dropoutValue, drVal)
+      if(length(drVal))
+        params$dropoutValue = c(params$dropoutValue, setnames(drVal, loc.name))
     }
 
     # Second part III: Minor allele frequency
     if(includeParams) {
       patt3 = "(?<=Minor allele frequency = )[\\.\\d]+"
       thismaf = safeNum(regmatches(mInfo[[2]], regexpr(patt3, mInfo[[2]], perl = TRUE)))
-      names(thismaf) = loc.name
-      params$maf = c(params$maf, thismaf)
+      if(length(thismaf))
+        params$maf = c(params$maf, setnames(thismaf, loc.name))
     }
 
     # Read alleles and freqs
@@ -440,7 +440,6 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     loc.line = loc.line + 13 + 2*nAll
   }
 
-
   ###########
   ### DVI ###
   ###########
@@ -470,7 +469,12 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
       chrom(res, seq_along(loci)) = "X"
     }
 
-    if(verbose) cat("\n")
+    if(includeParams)
+      res = list(main = res, params = params)
+
+    if(verbose)
+      cat("\n")
+
     return(res)
   }
 
