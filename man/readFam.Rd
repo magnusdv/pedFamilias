@@ -66,6 +66,8 @@ If \code{includeParams = TRUE}, the output is a list with elements \code{main} (
 main output, as described above) and \code{params}, a list with some or all of
 the following entries:
 \itemize{
+\item \code{version}: The version of Familias
+\item \code{dvi}: A logical indicating if a DVI section was read.
 \item \code{dbName}: The name of the database
 \item \code{dbSize}: A named numeric vector containing the DatabaseSize reported for
 each marker

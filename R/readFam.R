@@ -45,6 +45,8 @@
 #'   main output, as described above) and `params`, a list with some or all of
 #'   the following entries:
 #'
+#'   * `version`: The version of Familias
+#'   * `dvi`: A logical indicating if a DVI section was read.
 #'   * `dbName`: The name of the database
 #'   * `dbSize`: A named numeric vector containing the DatabaseSize reported for
 #'   each marker
@@ -105,6 +107,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   # Read and print Familias version
   version = x[3]
+  params$version = version
   if(verbose)
     cat("Familias version:", version, "\n")
 
@@ -115,6 +118,8 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   if(verbose)
     cat("Read DVI:", if(useDVI) "Yes\n" else "No\n")
+
+  params$dvi = useDVI
 
   ### Individuals and genotypes
 

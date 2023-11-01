@@ -54,6 +54,8 @@ Familias session with the produced file loaded.
 The following parameters are applied by default, but may be adjusted with the
 \code{params} argument:
 \itemize{
+\item \code{version} = "3.2.8"
+\item \code{dvi} = \code{FALSE} (for now the only valid option)
 \item \code{dbName = "unknown"}
 \item \code{dbSize = 1000}
 \item \code{dropout = 0}

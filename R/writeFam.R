@@ -8,6 +8,8 @@
 #' The following parameters are applied by default, but may be adjusted with the
 #' `params` argument:
 #'
+#' * `version` = "3.2.8"
+#' * `dvi` = `FALSE` (for now the only valid option)
 #' * `dbName = "unknown"`
 #' * `dbSize = 1000`
 #' * `dropout = 0`
@@ -105,6 +107,10 @@
 #' @export
 writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
                     openFam = FALSE, FamiliasPath = NULL, verbose = TRUE) {
+
+  if(isTRUE(params$dvi))
+    stop2("Writing .fam files compatible with the DVI module is not yet implemented")
+
   peds = list(...)
   if (length(peds) == 1)
     peds = peds[[1]]
@@ -179,9 +185,11 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   quo = function(s) sprintf('"%s"', s %||% "")
 
   # Preamble
-  addline(quo("Output from Familias, version 3.2.8"),
+  version = params$version %||% "3.2.8"
+
+  addline(quo(paste("Output from Familias, version", version)),
           quo(sprintf("(Actually produced by R/pedsuite, %s)", format(Sys.Date(), "%d %b %Y"))),
-          "3.2.8",
+          version,
           quo(""),
           if(dbOnly) 0 else nind)
 
