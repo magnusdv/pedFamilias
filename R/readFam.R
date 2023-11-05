@@ -1,8 +1,8 @@
 #' Read Familias .fam files
 #'
-#' This function parses the content of a .fam file exported from Familias, and
-#' converts it into suitable `ped` objects. This function does not depend on the
-#' `Familias` R package.
+#' Parses the content of a .fam file exported from Familias, and converts it
+#' into suitable `ped` objects. This function does not depend on the `Familias`
+#' R package.
 #'
 #' @param famfile Path to a .fam file.
 #' @param useDVI A logical, indicating if the DVI section of the .fam file
@@ -46,7 +46,7 @@
 #'   the following entries:
 #'
 #'   * `version`: The version of Familias
-#'   * `dvi`: A logical indicating if a DVI section was read.
+#'   * `dvi`: A logical indicating if a DVI section was read
 #'   * `dbName`: The name of the database
 #'   * `dbSize`: A named numeric vector containing the DatabaseSize reported for
 #'   each marker

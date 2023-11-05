@@ -67,7 +67,7 @@ main output, as described above) and \code{params}, a list with some or all of
 the following entries:
 \itemize{
 \item \code{version}: The version of Familias
-\item \code{dvi}: A logical indicating if a DVI section was read.
+\item \code{dvi}: A logical indicating if a DVI section was read
 \item \code{dbName}: The name of the database
 \item \code{dbSize}: A named numeric vector containing the DatabaseSize reported for
 each marker
@@ -81,9 +81,9 @@ given for each marker
 }
 }
 \description{
-This function parses the content of a .fam file exported from Familias, and
-converts it into suitable \code{ped} objects. This function does not depend on the
-\code{Familias} R package.
+Parses the content of a .fam file exported from Familias, and converts it
+into suitable \code{ped} objects. This function does not depend on the \code{Familias}
+R package.
 }
 \examples{
 # Using example file "paternity.fam" included in the package
