@@ -400,10 +400,23 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     femaleMutMat = mutationMatrix(model = femaleMod, alleles = als, afreq = frqs,
                                   rate = mutrate.fem, rate2 = mutrate2.fem, range = range.fem)
 
-    if(names(maleMod) == "step-stationary")
-      maleMutMat = pedmut::stabilize(maleMutMat, method = "PM")
-    if(names(femaleMod) == "step-stationary")
-      femaleMutMat = pedmut::stabilize(femaleMutMat, method = "PM")
+    if(names(maleMod) == "step-stationary") {
+      maleMutMat = tryCatch(pedmut::stabilize(maleMutMat, method = "PM"),
+        error = function(e) {
+          warning(sprintf("Database error, locus %s: Cannot stabilize mutation matrix. Changed to '%s' model.",
+                          loc.name, fallbackModel), call. = FALSE)
+          mutationMatrix(model = fallbackModel, alleles = als, afreq = frqs, rate = mutrate.mal)
+        })
+      if(pedmut::getParams(maleMutMat, "model") == fallbackModel)
+         maleMod = models[models == fallbackModel]
+    }
+
+    if(names(femaleMod) == "step-stationary") {
+      femaleMutMat = tryCatch(pedmut::stabilize(femaleMutMat, method = "PM"),
+        error = function(e) mutationMatrix(model = fallbackModel, alleles = als, afreq = frqs, rate = mutrate.fem))
+      if(pedmut::getParams(femaleMutMat, "model") == fallbackModel)
+         femaleMod = models[models == fallbackModel]
+    }
 
     # Print locus summary
     if(verbose) {
