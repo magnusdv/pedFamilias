@@ -9,13 +9,18 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  dpi = 300,
+  fig.align = "center"
 )
 ```
 
 # pedFamilias
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/pedFamilias)](https://CRAN.R-project.org/package=pedFamilias)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/pedFamilias?color=yellow)](https://cran.r-project.org/package=pedFamilias)
+[![](https://cranlogs.r-pkg.org/badges/last-month/pedFamilias?color=yellow)](https://cran.r-project.org/package=pedFamilias)
 <!-- badges: end -->
 
 The purpose of **pedFamilias** is to facilitate data exchanging between the **pedsuite** packages and the [Familias](https://familias.name/) software. The main functions are `readFam()` and `writeFam()` for reading and writing .fam files associated with Familias. Notably, .fam files written with the DVI module of Familias are supported, and also database files without pedigree information. 
@@ -23,10 +28,14 @@ The purpose of **pedFamilias** is to facilitate data exchanging between the **pe
 These functions were originally part of [**forrel**](https://github.com/magnusdv/forrel), but were split out to streamline maintenance and provide a more lightweight import for other packages otherwise independent of **forrel**.
 
 ## Installation
+Install **pedFamilias** from CRAN as follows:
+```{r eval = F}
+install.packages("pedFamilias")
+```
 
-You can install the development version of **pedFamilias** from GitHub with:
+Alternatively, you may install the development version from GitHub:
 
-``` r
+```{r eval = F}
 # install.packages("remotes")
 remotes::install_github("magnusdv/pedFamilias")
 ```
@@ -45,8 +54,13 @@ peds = readFam(fam)
 ```
 
 Here are the pedigrees, including genotypes for the first marker:
-```{r paternity-peds, fig.height = 2.5, fig.width = 4.5, out.width = "60%", dpi = 300, fig.align = "center"}
+```{r paternity-peds, fig.height = 2.5, fig.width = 4.5, out.width = "60%"}
 plotPedList(peds, hatched = typedMembers, marker = 1)
 ```
 
-For further analysis of the data, check out the **forrel** package. For instance, the command `forrel::kinshipLR(peds)` computes the likelihood ratio.
+Further analysis of the data may be carried out with the [**forrel**](https://github.com/magnusdv/forrel) package. For instance, the following command computes the likelihood ratio comparing the two hypotheses:
+
+```{r}
+forrel::kinshipLR(peds)
+```
+
