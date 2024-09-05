@@ -84,8 +84,8 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    fallbackModel = c("equal", "proportional"), simplify1 = TRUE,
                    deduplicate = TRUE, includeParams = FALSE, verbose = TRUE) {
 
-  if(!file.exists(famfile))
-    stop2("File not found: ", famfile)
+  #if(!file.exists(famfile))
+  #  stop2("File not found: ", famfile)
 
   if(!endsWith(famfile, ".fam"))
     stop2("Input file must end with '.fam': ", famfile)
