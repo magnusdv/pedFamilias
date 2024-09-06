@@ -2,7 +2,7 @@
 % Please edit documentation in R/readFam.R
 \name{readFam}
 \alias{readFam}
-\title{Read Familias .fam files}
+\title{Read Familias \code{.fam} files}
 \usage{
 readFam(
   famfile,
@@ -17,9 +17,9 @@ readFam(
 )
 }
 \arguments{
-\item{famfile}{Path to a .fam file.}
+\item{famfile}{Path (or URL) to a \code{.fam} file.}
 
-\item{useDVI}{A logical, indicating if the DVI section of the .fam file
+\item{useDVI}{A logical, indicating if the DVI section of the \code{.fam} file
 should be identified and parsed. If \code{NA} (the default), the DVI section is
 included if it is present in the input file.}
 
@@ -81,7 +81,7 @@ given for each marker
 }
 }
 \description{
-Parses the content of a .fam file exported from Familias, and converts it
+Parses the content of a \code{.fam} file exported from Familias, and converts it
 into suitable \code{ped} objects. This function does not depend on the \code{Familias}
 R package.
 }

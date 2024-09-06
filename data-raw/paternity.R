@@ -17,7 +17,7 @@ dat = list(H1 = ped1, H2 = ped2)
 # For comparison with Familias below
 kinshipLR(dat)
 
-# Write .fam file and open in Familias
+# Write `.fam` file and open in Familias
 fam = file.path("inst/extdata", "paternity.fam")
 writeFam(dat, famfile = fam)
 

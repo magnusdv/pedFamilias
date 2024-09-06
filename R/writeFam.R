@@ -1,6 +1,6 @@
 #' Export `ped` objects to .fam
 #'
-#' This function produces a .fam file readable by the Familias software (Egeland
+#' This function produces a `.fam` file readable by the Familias software (Egeland
 #' et al., 2000), containing all input pedigrees, their marker data and mutation
 #' models. The option `openFam = TRUE` calls `openFamilias()` to open a fresh
 #' Familias session with the produced file loaded.
@@ -32,7 +32,7 @@
 #' @param dbOnly A logical. If TRUE, no pedigree information is included; only
 #'   the frequency database.
 #' @param openFam A logical. If TRUE, an attempt is made to open the produced
-#'   .fam file in an external Familias session. Only available on Windows
+#'   `.fam` file in an external Familias session. Only available on Windows
 #'   systems with a working Familias installation.
 #' @param FamiliasPath The path to the Familias executable. If empty, the
 #'   following are tried in order: "Familias3.exe", "C:/Program Files
@@ -109,7 +109,7 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
                     openFam = FALSE, FamiliasPath = NULL, verbose = TRUE) {
 
   if(isTRUE(params$dvi))
-    stop2("Writing .fam files compatible with the DVI module is not yet implemented")
+    stop2("Writing `.fam` files compatible with the DVI module is not yet implemented")
 
   peds = list(...)
   if (length(peds) == 1)

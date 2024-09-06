@@ -32,7 +32,7 @@ entries. See also Details for default values.}
 the frequency database.}
 
 \item{openFam}{A logical. If TRUE, an attempt is made to open the produced
-.fam file in an external Familias session. Only available on Windows
+\code{.fam} file in an external Familias session. Only available on Windows
 systems with a working Familias installation.}
 
 \item{FamiliasPath}{The path to the Familias executable. If empty, the
@@ -45,7 +45,7 @@ following are tried in order: "Familias3.exe", "C:/Program Files
 The file name is returned invisibly.
 }
 \description{
-This function produces a .fam file readable by the Familias software (Egeland
+This function produces a \code{.fam} file readable by the Familias software (Egeland
 et al., 2000), containing all input pedigrees, their marker data and mutation
 models. The option \code{openFam = TRUE} calls \code{openFamilias()} to open a fresh
 Familias session with the produced file loaded.

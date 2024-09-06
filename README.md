@@ -13,10 +13,13 @@ status](https://www.r-pkg.org/badges/version/pedFamilias)](https://CRAN.R-projec
 
 The purpose of **pedFamilias** is to facilitate data exchanging between
 the **pedsuite** packages and the [Familias](https://familias.name/)
-software. The main functions are `readFam()` and `writeFam()` for
-reading and writing .fam files associated with Familias. Notably, .fam
-files written with the DVI module of Familias are supported, and also
-database files without pedigree information.
+software for forensic kinship analysis. The main functions are
+`readFam()` and `writeFam()` for reading and writing `.fam` files, which
+are used by Familias.
+
+The `readFam()` function also supports files written with the DVI module
+of Familias, and also pure database files *without* pedigree
+information.
 
 These functions were originally part of
 [**forrel**](https://github.com/magnusdv/forrel), but were split out to
@@ -31,7 +34,7 @@ Install **pedFamilias** from CRAN as follows:
 install.packages("pedFamilias")
 ```
 
-Alternatively, you may install the development version from GitHub:
+Alternatively, install the development version from GitHub:
 
 ``` r
 # install.packages("remotes")
