@@ -1,4 +1,4 @@
-# pedFamilias 0.2.3
+# pedFamilias 0.2.4
 
 * In `readFam()` allow `path` to an URL
 * Minor doc improvements
