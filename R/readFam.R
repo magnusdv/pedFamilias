@@ -30,7 +30,7 @@
 #'
 #'   * If the input file only contains a database, the output is a list of
 #'   information (name, alleles, frequencies, mutation model) about each locus.
-#'   This list can be used as `locusAttributes` in e.g. [setMarkers()].
+#'   This list can be used as `locusAttributes` in e.g. [pedtools::setMarkers()].
 #'
 #'   * If the input file describes pedigree data, the output is a list of `ped`
 #'   objects. If there is only one pedigree, and `simplify1 = TRUE`, the output

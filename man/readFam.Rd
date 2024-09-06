@@ -52,7 +52,7 @@ following possible outcomes:
 \itemize{
 \item If the input file only contains a database, the output is a list of
 information (name, alleles, frequencies, mutation model) about each locus.
-This list can be used as \code{locusAttributes} in e.g. \code{\link[=setMarkers]{setMarkers()}}.
+This list can be used as \code{locusAttributes} in e.g. \code{\link[pedtools:marker_attach]{pedtools::setMarkers()}}.
 \item If the input file describes pedigree data, the output is a list of \code{ped}
 objects. If there is only one pedigree, and \code{simplify1 = TRUE}, the output
 is a \code{ped} object.
