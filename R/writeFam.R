@@ -112,6 +112,11 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
     stop2("Writing `.fam` files compatible with the DVI module is not yet implemented")
 
   peds = list(...)
+  # Safeguard against accidental filename included in `peds`
+  if(length(peds) == 2 && is.character(peds[[2]]) && endsWith(peds[[2]], ".fam")) {
+    famfile = peds[[2]]
+    peds = peds[[1]]
+  }
   if (length(peds) == 1)
     peds = peds[[1]]
   if (is.ped(peds))
