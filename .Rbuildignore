@@ -7,3 +7,5 @@
 ^CRAN-SUBMISSION$
 ^revdep$
 ^\.github$
+^\.positai$
+^\.claude$
