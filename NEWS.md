@@ -1,3 +1,7 @@
+# pedFamilias 0.2.5
+
+This is a maintenance release fixing a few minor bugs and typos.
+
 # pedFamilias 0.2.4
 
 * In `readFam()` allow `path` to be an URL.
