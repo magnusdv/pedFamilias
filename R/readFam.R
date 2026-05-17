@@ -306,6 +306,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     model.idx.fem = getInt(loc.line + 3, "an integer code (0-4) for the female mutation model", max = 4)
     model.idx.mal = getInt(loc.line + 4, "an integer code (0-4) for the male mutation model", max = 4)
 
+    # Not currently used:
     nAll.with.silent = as.integer(x[loc.line + 5]) # includes silent allele
 
     range.fem = as.numeric(x[loc.line + 6])
@@ -317,7 +318,8 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     has.silent = x[loc.line + 10] == "#TRUE#"
     if(has.silent)
       stop2("Locus ", loc.name, " has silent frequencies: this is not implemented yet")
-    silent.freq = as.numeric(x[loc.line + 11])
+
+    silent.freq = as.numeric(x[loc.line + 11]) # not currently used
 
     # Info line, e.g. "17\t(DatabaseSize = 600 , Dropout probability = 0 , Minor allele frequency = 0 )"
     mInfo = unlist(strsplit(x[loc.line + 12], "\t"))
