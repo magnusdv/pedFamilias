@@ -154,8 +154,8 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
 
     # Override params$dropoutConsider
     if(!is.null(dnms <- names(dropoutInd))) {
-      if(!all(dnms %in% LABS))
-        stop2("Unknown ID in `dropout`: ", setdiff(dnms, LABS))
+      if(anyNA(match(dnms, LABS)))
+        stop2("Unknown ID in `dropout`: ", .mysetdiff(dnms, LABS))
       dropoutConsider[] = FALSE
       dropoutConsider[dnms] = dropoutInd > 0
     }

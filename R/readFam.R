@@ -115,7 +115,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   if(is.na(useDVI))
     useDVI = "[DVI]" %in% x
-  else if(useDVI && !"[DVI]" %in% x)
+  else if(useDVI && "[DVI]" %notin% x)
     stop2("No DVI section found in input file")
 
   if(verbose)

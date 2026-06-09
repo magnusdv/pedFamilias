@@ -56,6 +56,9 @@ setnames = function(x, nms) {
   y[match(x, y, 0L)]
 }
 
+.mysetequal = function(x, y) {
+  !anyNA(match(x, y)) && !anyNA(match(y, x))
+}
 
 ftime = function(st, digits = 3) {
   format(Sys.time() - st, digits = digits)
