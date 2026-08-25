@@ -6,6 +6,8 @@ export(readFam)
 export(readFamiliasLoci)
 export(writeFam)
 import(pedtools)
-importFrom(pedmut,mutationMatrix)
-importFrom(pedmut,mutationModel)
-importFrom(pedmut,validateMutationModel)
+importFrom(pedmut,
+  mutationMatrix,
+  mutationModel,
+  validateMutationModel
+)
