@@ -21,6 +21,9 @@
 #' @param includeParams A logical indicating if various parameters should be
 #'   read and returned in a separate list. See Value for details. Default:
 #'   FALSE.
+#' @param convert A logical. If FALSE, return the parsed pedigrees,
+#'   genotype data and loci without conversion to pedsuite objects. Default:
+#'   TRUE.
 #' @param verbose A logical. If TRUE, various information is written to the
 #'   screen during the parsing process.
 #'
@@ -78,11 +81,19 @@
 #'
 #' stopifnot(identical(x$main, peds))
 #'
+#' # Return elements without full conversion to pedsuite
+#' dat = readFam(fam, convert = FALSE)
+#' dat$datamatrix
+#'
+#' y = Familias2ped(dat$pedigrees, dat$datamatrix, dat$loci)
+#' stopifnot(identical(y, peds))
+#'
 #' @importFrom pedmut mutationMatrix
 #' @export
 readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    fallbackModel = c("equal", "proportional"), simplify1 = TRUE,
-                   deduplicate = TRUE, includeParams = FALSE, verbose = TRUE) {
+                   deduplicate = TRUE, includeParams = FALSE, convert = TRUE,
+                   verbose = TRUE) {
 
   if(!endsWith(famfile, ".fam"))
     stop2("Input file must end with '.fam': ", famfile)
@@ -104,7 +115,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     j
   }
 
-  # Initialise storage for extra info, if indicated
+  # Initialise storage for extra info, if needed
   params = if(includeParams) list() else NULL
 
   # Read and print Familias version
@@ -473,6 +484,13 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     if(verbose)
       cat("*** Finished DVI section ***\n\n")
 
+    if(!convert) {
+      res = list(dviComponents = dvi.families, loci = loci)
+      if(includeParams)
+        res$params = params
+      return(res)
+    }
+
     if(verbose)
       cat("Converting to `ped` format\n")
     res = lapply(dvi.families, function(fam) {
@@ -528,7 +546,15 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     }
   }
 
-  # Return
+
+  if(!convert) {
+      res = list(pedigrees = pedigrees, datamatrix = datamatrix, loci = loci)
+      if(includeParams)
+        res$params = params
+      return(res)
+    }
+
+  # Convert to peds
   if(!is.null(pedigrees)) {
     if(verbose)
       cat("\nConverting to `ped` format\n")

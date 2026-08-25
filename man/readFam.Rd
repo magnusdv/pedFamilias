@@ -13,6 +13,7 @@ readFam(
   simplify1 = TRUE,
   deduplicate = TRUE,
   includeParams = FALSE,
+  convert = TRUE,
   verbose = TRUE
 )
 }
@@ -41,6 +42,10 @@ redundant copies of the reference pedigrees are removed.}
 \item{includeParams}{A logical indicating if various parameters should be
 read and returned in a separate list. See Value for details. Default:
 FALSE.}
+
+\item{convert}{A logical. If FALSE, return the parsed pedigrees,
+genotype data and loci without conversion to pedsuite objects. Default:
+TRUE.}
 
 \item{verbose}{A logical. If TRUE, various information is written to the
 screen during the parsing process.}
@@ -98,6 +103,13 @@ x = readFam(fam, includeParams = TRUE)
 x$params
 
 stopifnot(identical(x$main, peds))
+
+# Return elements without full conversion to pedsuite
+dat = readFam(fam, convert = FALSE)
+dat$datamatrix
+
+y = Familias2ped(dat$pedigrees, dat$datamatrix, dat$loci)
+stopifnot(identical(y, peds))
 
 }
 \references{
