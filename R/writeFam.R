@@ -163,8 +163,12 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   }
 
   # Extra param: Dropout
-  dropoutConsider = params$dropoutConsider %||% setnames(rep_len(FALSE, nind), LABS)
-  dropoutValue    = params$dropoutValue %||% setnames(rep_len(0, nmar), MARKERS)
+  dropoutConsider = params$dropoutConsider %||% FALSE
+  dropoutValue = params$dropoutValue %||% 0
+  if(length(dropoutConsider) == 1)
+    dropoutConsider = setnames(rep_len(dropoutConsider, nind), LABS)
+  if(length(dropoutValue) == 1)
+    dropoutValue = setnames(rep_len(dropoutValue, nmar), MARKERS)
 
   # If shortcut "dropout" is used, overrule the others
   if(!is.null(dropoutInd <- params[["dropout"]])) {
