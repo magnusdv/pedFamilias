@@ -98,9 +98,10 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   if(!endsWith(famfile, ".fam"))
     stop2("Input file must end with '.fam': ", famfile)
 
-  if(any(startsWith(famfile, c("http", "ftp", "www"))) && verbose)
+  isUrl = any(startsWith(famfile, c("http", "ftp", "www")))
+  if(isUrl && verbose)
     cat("Reading from URL:", famfile, "\n")
-  else if(!file.exists(famfile))
+  if(!isUrl && !file.exists(famfile))
     stop2("File not found: ", famfile)
 
   # Read entire file
