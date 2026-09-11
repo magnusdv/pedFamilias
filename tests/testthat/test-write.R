@@ -23,3 +23,8 @@ test_that("writeFam() + readFam() recreates ped", {
   y4 = writeFam(x4, famfile = tempfile(), verbose = F) |> readFam(verbose = F)
   expect_equal(x4, y4)
 })
+
+test_that("Unnamed markers are caught early", {
+  x = nuclearPed() |> addMarker("3" = "1/2")
+  expect_error(writeFam(x, famfile = tempfile()), "All markers must have names")
+})

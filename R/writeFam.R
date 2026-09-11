@@ -136,6 +136,9 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
 
   # All unique marker names
   MARKERS = unique.default(unlist(lapply(peds, name)))
+  if(anyNA(MARKERS) || any(!nzchar(MARKERS)))
+    stop2("All markers must have names")
+
   nmar = length(MARKERS)
 
   # Extra param: Dropout
