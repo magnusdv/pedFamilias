@@ -130,16 +130,37 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
                   class(peds[[idx]])))
   }
 
-  # All unique individual names
-  LABS = unique.default(unlist(lapply(peds, labels)))
-  nind = length(LABS)
+  # Flatten components and check marker names
+  pnms = names(peds)
+  ncomp = lengths(peds)
+  flat = unlist(peds, recursive = FALSE, use.names = FALSE)
 
-  # All unique marker names
-  MARKERS = unique.default(unlist(lapply(peds, name)))
+  MARKERS = unique.default(unlist(lapply(flat, name)))
   if(anyNA(MARKERS) || any(!nzchar(MARKERS)))
     stop2("All markers must have names")
 
+  # Harmonise marker order and attributes
+  flat = harmoniseMarkers(flat, verbose = FALSE)
+  peds = split(flat, rep(seq_along(peds), ncomp))
+  names(peds) = pnms
+
+  # All unique individual names
+  LABS = unique.default(unlist(lapply(peds, labels)))
+  nind = length(LABS)
   nmar = length(MARKERS)
+
+  # Check repeated individuals
+  labs = unlist(lapply(flat, labels), use.names = FALSE)
+  for(id in unique(labs[duplicated(labs)])) {
+    cmp = flat[vapply(flat, function(x) id %in% labels(x), logical(1))]
+    sx = vapply(cmp, getSex, numeric(1), id = id)
+    gx = lapply(cmp, getAlleles, ids = id)
+
+    if(!all(sx == sx[1]))
+      stop2("Conflicting sex for repeated ID: ", id)
+    if(!all(vapply(gx[-1], identical, logical(1), gx[[1]])))
+      stop2("Conflicting genotypes for repeated ID: ", id)
+  }
 
   # Extra param: Dropout
   dropoutConsider = params$dropoutConsider %||% setnames(rep_len(FALSE, nind), LABS)
