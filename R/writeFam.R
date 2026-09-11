@@ -324,7 +324,10 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
     else
       mut = data.frame(model = c("equal", "equal"), rate = 0, range = 0, rate2 = 0)
 
-    mod = match(mut$model, c("equal", "proportional", "stepwise"), nomatch = 1L)
+    mod = match(mut$model, c("equal", "proportional", "stepwise"))
+    if(anyNA(mod))
+      stop2("Unsupported mutation model for marker '", mname, "': ", unique(mut$model[is.na(mod)]))
+
     mod[mod == 3 & !is.na(mut$rate2)] = 5
 
     nals = length(attrs$alleles)
