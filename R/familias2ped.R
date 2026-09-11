@@ -50,6 +50,9 @@
 Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
                         prefixAdded = "added_") {
 
+  if(inherits(loci, "FamiliasLocus"))
+    loci = list(loci)
+
   ### If first argument is a list of FamiliasPedigrees, convert one at a time.
   if (is.list(familiasped) && inherits(familiasped[[1]], "FamiliasPedigree")) {
       res = lapply(familiasped, function(p)

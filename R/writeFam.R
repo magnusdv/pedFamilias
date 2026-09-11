@@ -174,7 +174,7 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
       stop2("All nonzero dropout values must be equal: ", sort(udr))
 
     # Override dropoutValue
-    dropoutValue[] = max(udr)
+    dropoutValue[] = max(udr, 0)
 
     # Override params$dropoutConsider
     if(!is.null(dnms <- names(dropoutInd))) {
