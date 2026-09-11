@@ -1,3 +1,18 @@
+# pedFamilias 0.2.6
+
+* `readFam()` gains argument `convert`, allowing the parsed Familias data to be returned without conversion to pedsuite objects.
+
+* `readFam()` now explicitly rejects files made with the 'Familial searching' module.
+
+* `writeFam()` now harmonises marker data across pedigree components before writing the file.
+
+* `writeFam()` detects and stops with an error if the data contains unnamed markers.
+
+* Fixed a bug causing URLs to be rejected when `verbose = FALSE`.
+
+* Fixed parsing of parameters written in scientific notation.
+
+
 # pedFamilias 0.2.5
 
 This is a maintenance release fixing a few minor bugs and typos.
