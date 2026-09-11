@@ -105,6 +105,10 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   # Read entire file
   raw = readLines(famfile)
+
+  if("[Familial searching]" %in% raw)
+    stop2("Files made with the 'Familial searching' module are not supported by `readFam()`")
+
   x = gsub("\\\"", "", raw)
 
   # Utility function for checking integer values
