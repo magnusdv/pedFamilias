@@ -286,7 +286,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
   fallbackModel = match.arg(fallbackModel)
 
   # Theta?
-  patt = "(?<=Theta/Kinship/Fst: )[\\.\\d]+"
+  patt = "(?<=Theta/Kinship/Fst: )[-+0-9.eE]+"
   theta = safeNum(regmatches(x[ped.line], regexpr(patt, x[ped.line], perl = TRUE)))
   if(includeParams)
     params$theta = theta
@@ -353,7 +353,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
     # Second part II: Dropout value per marker
     if(includeParams) {
-      patt2 = "(?<=Dropout probability = )[\\.\\d]+"
+      patt2 = "(?<=Dropout probability = )[-+0-9.eE]+"
       drVal = safeNum(regmatches(mInfo[[2]], regexpr(patt2, mInfo[[2]], perl = TRUE)))
       if(length(drVal))
         params$dropoutValue = c(params$dropoutValue, setnames(drVal, loc.name))
@@ -361,7 +361,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
     # Second part III: Minor allele frequency
     if(includeParams) {
-      patt3 = "(?<=Minor allele frequency = )[\\.\\d]+"
+      patt3 = "(?<=Minor allele frequency = )[-+0-9.eE]+"
       thismaf = safeNum(regmatches(mInfo[[2]], regexpr(patt3, mInfo[[2]], perl = TRUE)))
       if(length(thismaf))
         params$maf = c(params$maf, setnames(thismaf, loc.name))
