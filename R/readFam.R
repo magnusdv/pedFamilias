@@ -96,7 +96,7 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
                    verbose = TRUE) {
 
   if(!endsWith(famfile, ".fam"))
-    stop2("Input file must end with '.fam': ", famfile)
+    stop2("Input file must end with .fam: ", famfile)
 
   isUrl = any(startsWith(famfile, c("http", "ftp", "www")))
   if(isUrl && verbose)
@@ -106,6 +106,12 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
   # Read entire file
   raw = readLines(famfile)
+
+  # Convert to UTF-8 if needed
+  if(!all(validUTF8(raw))) {
+    cat("Input file is not valid UTF-8. Attempting to convert\n")
+    raw = iconv(raw, from = "latin1", to = "UTF-8")
+  }
 
   if("[Familial searching]" %in% raw)
     stop2("Files made with the 'Familial searching' module are not supported by `readFam()`")
