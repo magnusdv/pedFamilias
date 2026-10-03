@@ -3,7 +3,7 @@
 \name{writeFam}
 \alias{writeFam}
 \alias{openFamilias}
-\title{Export \code{ped} objects to .fam}
+\title{Export data to .fam}
 \usage{
 writeFam(
   ...,
@@ -18,26 +18,26 @@ writeFam(
 openFamilias(famfile = NULL, FamiliasPath = NULL, verbose = TRUE)
 }
 \arguments{
-\item{...}{One or several pedigrees. Each argument should be either a single
-\code{ped} object or a list of such. If the pedigrees are unnamed, they are
-assigned names "Ped 1", "Ped 2", etc.}
+\item{...}{For ordinary files, one or several pedigrees. Each argument should be either
+a single \code{ped} object or a list of such. If the pedigrees are unnamed, they are
+assigned names "Ped 1", "Ped 2", etc. For DVI files, a single list with entries \code{pm},
+\code{am} and \code{missing}.}
 
-\item{famfile}{The name or path to the output file to be written. The
-extension ".fam" is added if missing.}
+\item{famfile}{The name or path to the output file to be written. The extension ".fam"
+is added if missing.}
 
-\item{params}{A list of further parameters; see \code{\link[=readFam]{readFam()}} for valid
-entries. See also Details for default values.}
+\item{params}{A list of Familias parameters controlling database settings, dropout and
+other options. See Details.}
 
-\item{dbOnly}{A logical. If TRUE, no pedigree information is included; only
-the frequency database.}
+\item{dbOnly}{A logical. If TRUE, no pedigree information is included; only the
+frequency database.}
 
-\item{openFam}{A logical. If TRUE, an attempt is made to open the produced
-\code{.fam} file in an external Familias session. Only available on Windows
-systems with a working Familias installation.}
+\item{openFam}{A logical. If TRUE, an attempt is made to open the produced \code{.fam} file
+in an external Familias session. Only available on Windows systems with a working
+Familias installation.}
 
-\item{FamiliasPath}{The path to the Familias executable. If empty, the
-following are tried in order: "Familias3.exe", "C:/Program Files
-(x86)/Familias3/Familias3.exe".}
+\item{FamiliasPath}{The path to the Familias executable. If empty, the following are
+tried in order: "Familias3.exe", "C:/Program Files (x86)/Familias3/Familias3.exe".}
 
 \item{verbose}{A logical, by default TRUE.}
 }
@@ -45,29 +45,62 @@ following are tried in order: "Familias3.exe", "C:/Program Files
 The file name is returned invisibly.
 }
 \description{
-This function produces a \code{.fam} file readable by the Familias software (Egeland
-et al., 2000), containing all input pedigrees, their marker data and mutation
-models. The option \code{openFam = TRUE} calls \code{openFamilias()} to open a fresh
-Familias session with the produced file loaded.
+This function produces a \code{.fam} file readable by the Familias software (Egeland et al.,
+2000), containing all input pedigrees, their marker data and mutation models. The
+option \code{openFam = TRUE} calls \code{openFamilias()} to open a fresh Familias session with
+the produced file loaded.
 }
 \details{
-The following parameters are applied by default, but may be adjusted with the
-\code{params} argument:
+\strong{Parameters}
+
+The \code{params} argument controls various Familias settings. Most entries below  may be
+omitted, in which case suitable defaults are used. Single values are recycled over
+markers or individuals as appropriate. The \code{params} argument is broadly compatible with
+the \code{params} component produced by \code{\link[=readFam]{readFam()}} with \code{includeParams = TRUE}.
+
+\emph{General parameters}
 \itemize{
-\item \code{version} = "3.2.8"
-\item \code{dvi} = \code{FALSE} (for now the only valid option)
-\item \code{dbName = "unknown"}
-\item \code{dbSize = 1000}
-\item \code{dropout = 0}
-\item \code{maf = 0}
-\item \code{theta = 0}
+\item \code{version}: Familias version written to the file. Default: \code{"3.4.1"}.
+\item \code{dvi}: Logical indicating whether to write a file for the Familias DVI module.
+Default: \code{FALSE}.
 }
 
-The \code{params} argument should be a list similar to the \code{params} slot produced
-by \code{\link[=readFam]{readFam()}} with \code{includeParams = TRUE}. Single entries are recycled if
-needed. If \code{params} contains a vector \code{dropout} with dropout probabilities
-for certain pedigree members, it is converted into corresponding
-\code{dropoutConsider} and \code{dropoutValue} vectors (see Examples).
+\emph{Database parameters}
+\itemize{
+\item \code{dbName}: Name of the marker database. Default: \code{"unknown"}.
+\item \code{dbSize}: Database size for each marker. Default: \code{1000}.
+\item \code{maf}: Minor allele frequency for each marker. Default: \code{0}.
+\item \code{theta}: Theta/kinship/Fst correction. Default: \code{0}.
+\item \code{dropoutValue}: Dropout probability for each marker. Default: \code{0}.
+\item \code{dropoutConsider}: Logical vector indicating which pedigree members should be
+subject to dropout.
+\item \code{dropout}: Convenience alternative to \code{dropoutConsider} and \code{dropoutValue}; either a
+single dropout probability or a named vector identifying individuals with dropout. For
+DVI files \code{dropout} has a different meaning (see below).
+}
+
+\emph{DVI parameters}
+
+The following probabilities pertain only to Direct/Identity matching in the DVI module:
+\itemize{
+\item \code{dropout}: Dropout probability. Default: \code{0}.
+\item \code{dropin}: Dropin probability. Default: \code{0}.
+\item \code{typingError}: Typing error probability. Default: \code{0}.
+}
+
+\strong{DVI data}
+
+For DVI files, set \code{params$dvi = TRUE} and supply a single list with the following
+entries:
+\itemize{
+\item \code{pm}: A list of singletons; the victim samples.
+\item \code{am}: A named list of reference families. Each must be a connected \code{ped} object, and have
+exactly one missing person.
+\item \code{missing}: A vector naming the missing persons.
+}
+
+To ensure that the input data has the correct format, we recommend writing DVI files
+through the wrapper \code{dvir::writeFamDVI()}.
 }
 \examples{
 
@@ -126,11 +159,21 @@ dbfam2 = writeFam(z, famfile = tempfile(), dbOnly = TRUE)
 
 stopifnot(identical(readLines(dbfam), readLines(dbfam2)))
 
+
+### DVI file
+
+pm = singleton("V1") |> addMarker(geno = "1/2", name = "M")
+
+am = nuclearPed(children = "MP") |>
+  addMarker(geno = c("1/1", "1/2", NA), name = "M")
+
+x = list(pm = list(V1 = pm), am = list(F1 = am), missing = "MP")
+writeFam(x, famfile = tempfile(fileext = ".fam"), params = list(dvi = TRUE))
+
 }
 \references{
-Egeland et al. (2000). \emph{Beyond traditional paternity and
-identification cases. Selecting the most probable pedigree.} Forensic Sci
-Int 110(1): 47-59.
+Egeland et al. (2000). \emph{Beyond traditional paternity and identification
+cases. Selecting the most probable pedigree.} Forensic Sci Int 110(1): 47-59.
 }
 \seealso{
 \code{\link[=readFam]{readFam()}}.

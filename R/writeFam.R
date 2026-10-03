@@ -1,51 +1,81 @@
-#' Export `ped` objects to .fam
+#' Export data to .fam
 #'
-#' This function produces a `.fam` file readable by the Familias software (Egeland
-#' et al., 2000), containing all input pedigrees, their marker data and mutation
-#' models. The option `openFam = TRUE` calls `openFamilias()` to open a fresh
-#' Familias session with the produced file loaded.
+#' This function produces a `.fam` file readable by the Familias software (Egeland et al.,
+#' 2000), containing all input pedigrees, their marker data and mutation models. The
+#' option `openFam = TRUE` calls `openFamilias()` to open a fresh Familias session with
+#' the produced file loaded.
 #'
-#' The following parameters are applied by default, but may be adjusted with the
-#' `params` argument:
+#' **Parameters**
 #'
-#' * `version` = "3.2.8"
-#' * `dvi` = `FALSE` (for now the only valid option)
-#' * `dbName = "unknown"`
-#' * `dbSize = 1000`
-#' * `dropout = 0`
-#' * `maf = 0`
-#' * `theta = 0`
+#' The `params` argument controls various Familias settings. Most entries below  may be
+#' omitted, in which case suitable defaults are used. Single values are recycled over
+#' markers or individuals as appropriate. The `params` argument is broadly compatible with
+#' the `params` component produced by [readFam()] with `includeParams = TRUE`.
 #'
-#' The `params` argument should be a list similar to the `params` slot produced
-#' by [readFam()] with `includeParams = TRUE`. Single entries are recycled if
-#' needed. If `params` contains a vector `dropout` with dropout probabilities
-#' for certain pedigree members, it is converted into corresponding
-#' `dropoutConsider` and `dropoutValue` vectors (see Examples).
+#' *General parameters*
 #'
-#' @param ... One or several pedigrees. Each argument should be either a single
-#'   `ped` object or a list of such. If the pedigrees are unnamed, they are
-#'   assigned names "Ped 1", "Ped 2", etc.
-#' @param famfile The name or path to the output file to be written. The
-#'   extension ".fam" is added if missing.
-#' @param params A list of further parameters; see [readFam()] for valid
-#'   entries. See also Details for default values.
-#' @param dbOnly A logical. If TRUE, no pedigree information is included; only
-#'   the frequency database.
-#' @param openFam A logical. If TRUE, an attempt is made to open the produced
-#'   `.fam` file in an external Familias session. Only available on Windows
-#'   systems with a working Familias installation.
-#' @param FamiliasPath The path to the Familias executable. If empty, the
-#'   following are tried in order: "Familias3.exe", "C:/Program Files
-#'   (x86)/Familias3/Familias3.exe".
+#' * `version`: Familias version written to the file. Default: `"3.4.1"`.
+#' * `dvi`: Logical indicating whether to write a file for the Familias DVI module.
+#' Default: `FALSE`.
+#'
+#' *Database parameters*
+#'
+#' * `dbName`: Name of the marker database. Default: `"unknown"`.
+#' * `dbSize`: Database size for each marker. Default: `1000`.
+#' * `maf`: Minor allele frequency for each marker. Default: `0`.
+#' * `theta`: Theta/kinship/Fst correction. Default: `0`.
+#' * `dropoutValue`: Dropout probability for each marker. Default: `0`.
+#' * `dropoutConsider`: Logical vector indicating which pedigree members should be
+#' subject to dropout.
+#'
+#' * `dropout`: Convenience alternative to `dropoutConsider` and `dropoutValue`; either a
+#' single dropout probability or a named vector identifying individuals with dropout. For
+#' DVI files `dropout` has a different meaning (see below).
+#'
+#' *DVI parameters*
+#'
+#' The following probabilities pertain only to Direct/Identity matching in the DVI module:
+#'
+#' * `dropout`: Dropout probability. Default: `0`.
+#' * `dropin`: Dropin probability. Default: `0`.
+#' * `typingError`: Typing error probability. Default: `0`.
+#'
+#' **DVI data**
+#'
+#' For DVI files, set `params$dvi = TRUE` and supply a single list with the following
+#' entries:
+#'
+#' * `pm`: A list of singletons; the victim samples.
+#' * `am`: A named list of reference families. Each must be a connected `ped` object, and have
+#' exactly one missing person.
+#' * `missing`: A vector naming the missing persons.
+#'
+#' To ensure that the input data has the correct format, we recommend writing DVI files
+#' through the wrapper `dvir::writeFamDVI()`.
+#'
+#' @param ... For ordinary files, one or several pedigrees. Each argument should be either
+#'   a single `ped` object or a list of such. If the pedigrees are unnamed, they are
+#'   assigned names "Ped 1", "Ped 2", etc. For DVI files, a single list with entries `pm`,
+#'   `am` and `missing`.
+#' @param famfile The name or path to the output file to be written. The extension ".fam"
+#'   is added if missing.
+#' @param params A list of Familias parameters controlling database settings, dropout and
+#'   other options. See Details.
+#' @param dbOnly A logical. If TRUE, no pedigree information is included; only the
+#'   frequency database.
+#' @param openFam A logical. If TRUE, an attempt is made to open the produced `.fam` file
+#'   in an external Familias session. Only available on Windows systems with a working
+#'   Familias installation.
+#' @param FamiliasPath The path to the Familias executable. If empty, the following are
+#'   tried in order: "Familias3.exe", "C:/Program Files (x86)/Familias3/Familias3.exe".
 #' @param verbose A logical, by default TRUE.
 #'
 #' @return The file name is returned invisibly.
 #'
 #' @seealso [readFam()].
 #'
-#' @references Egeland et al. (2000). _Beyond traditional paternity and
-#'   identification cases. Selecting the most probable pedigree._ Forensic Sci
-#'   Int 110(1): 47-59.
+#' @references Egeland et al. (2000). _Beyond traditional paternity and identification
+#'   cases. Selecting the most probable pedigree._ Forensic Sci Int 110(1): 47-59.
 #'
 #' @examples
 #'
@@ -104,22 +134,41 @@
 #'
 #' stopifnot(identical(readLines(dbfam), readLines(dbfam2)))
 #'
+#'
+#' ### DVI file
+#'
+#' pm = singleton("V1") |> addMarker(geno = "1/2", name = "M")
+#'
+#' am = nuclearPed(children = "MP") |>
+#'   addMarker(geno = c("1/1", "1/2", NA), name = "M")
+#'
+#' x = list(pm = list(V1 = pm), am = list(F1 = am), missing = "MP")
+#' writeFam(x, famfile = tempfile(fileext = ".fam"), params = list(dvi = TRUE))
+#'
 #' @export
 writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
                     openFam = FALSE, FamiliasPath = NULL, verbose = TRUE) {
 
-  if(isTRUE(params$dvi))
-    stop2("Writing `.fam` files compatible with the DVI module is not yet implemented")
-
   peds = list(...)
+
   # Safeguard against accidental filename included in `peds`
   if(length(peds) == 2 && is.character(peds[[2]]) && endsWith(peds[[2]], ".fam")) {
     famfile = peds[[2]]
-    peds = peds[[1]]
+    peds = peds[1]
   }
-  if (length(peds) == 1)
+
+  # DVI data?
+  if(isTRUE(params$dvi)) {
+    if(length(peds) != 1)
+      stop2("Multiple DVI inputs are not currently supported")
+    return(.writeDVI(peds[[1]], famfile = famfile, params = params, dbOnly = dbOnly,
+                     openFam = openFam, FamiliasPath = FamiliasPath, verbose = verbose))
+  }
+
+  # Regular file from here
+  if(length(peds) == 1)
     peds = peds[[1]]
-  if (is.ped(peds))
+  if(is.ped(peds))
     peds = list(peds)
 
   # Ensure each entry is a pedlist
@@ -218,7 +267,7 @@ writeFam = function(..., famfile = "ped.fam", params = NULL, dbOnly = FALSE,
   quo = function(s) sprintf('"%s"', s %||% "")
 
   # Preamble
-  version = params$version %||% "3.2.8"
+  version = params$version %||% "3.4.1"
 
   addline(quo(paste("Output from Familias, version", version)),
           quo(sprintf("(Actually produced by R/pedsuite, %s)", format(Sys.Date(), "%d %b %Y"))),
