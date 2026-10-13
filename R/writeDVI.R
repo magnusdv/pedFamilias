@@ -99,18 +99,32 @@
   addline("[[Notes]]", paste0("nFamilies= ", length(am)), rep("", length(am)),
           "[[Reference Families]]", paste0("nFamilies= ", length(am)))
 
-  # Missing person occurs in relationships, but not in the Persons section
+  # Missing person is represented by a sex-specific empty person
   for(i in seq_along(am)) {
     p = am[[i]]
     amName = names(am)[i]
 
+    misidx = match(miss[[i]], p$ID)
+    missex = p$SEX[misidx]
+    if(!missex %in% 1:2)
+      stop2("Unknown sex is not currently supported: ", miss[[i]])
+
     idx = which(p$ID != miss[[i]])
+    proxy = paste("Missing", c("male", "female")[missex], "1")
+    if(proxy %in% p$ID[idx])
+      stop2("Illegal name: ", proxy)
 
     addline(sprintf("[[[Family %d ]]]", i), paste0("Name= ", amName),
-            "[[[[Persons]]]]", paste0("nPersons= ", length(idx)))
+            "[[[[Persons]]]]", paste0("nPersons= ", length(idx) + 1))
 
     for(j in seq_along(idx))
       addPerson(p, idx = idx[j], num = j, depth = 5L)
+
+    addline(sprintf("[[[[[Person %d]]]]]", length(idx) + 1),
+            paste0("Name= ", proxy),
+            paste0("Gender= ", c("Male", "Female")[missex]),
+            "[[[[[[DNA data]]]]]]",
+            "nSystems= 0")
 
     # List parent-child pairs after replacing the missing person's label
     labs = p$ID

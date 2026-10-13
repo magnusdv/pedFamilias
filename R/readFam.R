@@ -605,7 +605,8 @@ asFamiliasPedigree = function(id, findex, mindex, sex) {
     return(NULL)
 
   if(is.numeric(sex))
-    sex = ifelse(sex == 1, "male", "female")
+    sex = c("unknown", "male", "female")[sex + 1]
+
 
   x = list(id = id, findex = findex, mindex = mindex, sex = sex)
   class(x) = "FamiliasPedigree"
@@ -765,10 +766,24 @@ parseFamily = function(x, deduplicate, verbose = TRUE) {
                     stringsAsFactors = FALSE)
 
     # Add extra individuals if needed (e.g. "Missing person")
-    extras <- setdiff(c(po$parent, po$child), id)
+    extras = setdiff(c(po$parent, po$child), id)
+    extraSex = integer(length(extras))
+
+    # Familias stores the sex of "Missing person" in an unused auxiliary person
+    if("Missing person" %in% extras) {
+      unused = setdiff(id, c(po$parent, po$child))
+      proxy = grep("^Missing (male|female) [0-9]+$", unused, value = TRUE)
+      if(length(proxy) == 1) {
+        extraSex[extras == "Missing person"] = sex[match(proxy, id)]
+        keep = this.id != proxy
+        this.id = this.id[keep]
+        this.sex = this.sex[keep]
+      }
+    }
+
     if(length(extras)) {
       this.id = c(this.id, extras)
-      this.sex = c(this.sex, rep(0L, length(extras)))
+      this.sex = c(this.sex, extraSex)
     }
 
     names(this.sex) = this.id
