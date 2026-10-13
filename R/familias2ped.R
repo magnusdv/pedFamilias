@@ -14,6 +14,7 @@
 #' @param datamatrix A data frame with two columns per marker (one for each
 #'   allele) and one row per individual.
 #' @param loci A `FamiliasLocus` object or a list of such.
+#' @param locusAttributes Precomputed locus attributes; defaults to conversion of `loci`.
 #' @param matchLoci A logical, by default FALSE. If TRUE, the column names of
 #'   `datamatrix` are matched against `names(loci)`, or, if these are missing,
 #'   against the `name` entries of `loci`. The column names of `datamatrix` are
@@ -47,8 +48,9 @@
 #' Familias2ped(famPed, datamatrix, loci = famLoc, matchLoci = TRUE)
 #'
 #' @export
-Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
-                        prefixAdded = "added_") {
+Familias2ped = function(familiasped, datamatrix, loci,
+                        locusAttributes = readFamiliasLoci(loci),
+                        matchLoci = FALSE, prefixAdded = "added_") {
 
   if(inherits(loci, "FamiliasLocus"))
     loci = list(loci)
@@ -56,7 +58,9 @@ Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
   ### If first argument is a list of FamiliasPedigrees, convert one at a time.
   if (is.list(familiasped) && inherits(familiasped[[1]], "FamiliasPedigree")) {
       res = lapply(familiasped, function(p)
-        Familias2ped(p, datamatrix = datamatrix, loci = loci, matchLoci = matchLoci, prefixAdded = prefixAdded))
+        Familias2ped(p, datamatrix = datamatrix, loci = loci,
+                     locusAttributes = locusAttributes, matchLoci = matchLoci,
+                     prefixAdded = prefixAdded))
       return(res)
   }
   else if(!inherits(familiasped, "FamiliasPedigree"))
@@ -67,32 +71,26 @@ Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
   id = familiasped$id
   findex = familiasped$findex
   mindex = familiasped$mindex
+  sex = match(tolower(familiasped$sex), c("unknown", "male", "female")) - 1L
 
-  p = data.frame(id = id, fid = 0, mid = 0, sex = 1, stringsAsFactors = FALSE)
-  p$fid[findex > 0] = id[findex]
-  p$mid[mindex > 0] = id[mindex]
-  p$sex[tolower(familiasped$sex) == "female"] = 2
+  fid = mid = rep.int(0, length(id))
+  fid[findex > 0] = id[findex[findex > 0]]
+  mid[mindex > 0] = id[mindex[mindex > 0]]
 
-  fatherMissing = which(p$fid == 0 & p$mid != 0)
-  motherMissing = which(p$fid != 0 & p$mid == 0)
-
+  fatherMissing = which(fid == 0 & mid != 0)
+  motherMissing = which(fid != 0 & mid == 0)
   nFath = length(fatherMissing)
   nMoth = length(motherMissing)
 
-  newFathers = paste0(prefixAdded, seq(1, length.out = nFath))
-  newMothers = paste0(prefixAdded, seq(nFath + 1, length.out = nMoth))
+  newFathers = if(nFath) paste0(prefixAdded, seq_len(nFath)) else character()
+  newMothers = if(nMoth) paste0(prefixAdded, nFath + seq_len(nMoth)) else character()
+  fid[fatherMissing] = newFathers
+  mid[motherMissing] = newMothers
 
-  # add new fathers
-  if (nFath > 0) {
-    p = rbind(p, data.frame(id = newFathers, fid = 0, mid = 0, sex = 1))
-    p[fatherMissing, "fid"] = newFathers
-  }
-
-  # add new mothers
-  if (nMoth > 0) {
-    p = rbind(p, data.frame(id = newMothers, fid = 0, mid = 0, sex = 2))
-    p[motherMissing, "mid"] = newMothers
-  }
+  p = list2DF(list(id = c(id, newFathers, newMothers),
+                   fid = c(fid, rep.int(0, nFath + nMoth)),
+                   mid = c(mid, rep.int(0, nFath + nMoth)),
+                   sex = c(sex, rep.int(1L, nFath), rep.int(2L, nMoth))))
 
   ### Part2: datamatrix
 
@@ -137,11 +135,8 @@ Familias2ped = function(familiasped, datamatrix, loci, matchLoci = FALSE,
     p = cbind(p, allelematrix, stringsAsFactors = FALSE)
   }
 
-  ### Part 3: marker attributes
-  locusAttributes = readFamiliasLoci(loci)
-
   ### Create ped object
-  as.ped(p, locusAttributes = locusAttributes)
+  as.ped(p, locusAttributes = locusAttributes, validateMarkers = FALSE)
 }
 
 

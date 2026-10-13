@@ -504,9 +504,13 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
 
     if(verbose)
       cat("Converting to `ped` format\n")
+
+    locAttrs = readFamiliasLoci(loci)
+
     res = lapply(dvi.families, function(fam) {
       Familias2ped(familiasped = fam$pedigrees, datamatrix = fam$datamatrix,
-                   loci = loci, matchLoci = TRUE, prefixAdded = prefixAdded)
+                   loci = loci, locusAttributes = locAttrs, matchLoci = TRUE,
+                   prefixAdded = prefixAdded)
     })
 
     # Set all chrom attributes to X if indicated
@@ -762,8 +766,7 @@ parseFamily = function(x, deduplicate, verbose = TRUE) {
 
     # Data frame of parent-child pairs
     parent.tags = which(tags == "Parent")
-    po = data.frame(parent = vals[parent.tags], child = vals[parent.tags + 1],
-                    stringsAsFactors = FALSE)
+    po = list2DF(list(parent = vals[parent.tags], child = vals[parent.tags + 1]))
 
     # Add extra individuals if needed (e.g. "Missing person")
     extras = setdiff(c(po$parent, po$child), id)

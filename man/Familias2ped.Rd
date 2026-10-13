@@ -9,6 +9,7 @@ Familias2ped(
   familiasped,
   datamatrix,
   loci,
+  locusAttributes = readFamiliasLoci(loci),
   matchLoci = FALSE,
   prefixAdded = "added_"
 )
@@ -22,6 +23,8 @@ readFamiliasLoci(loci)
 allele) and one row per individual.}
 
 \item{loci}{A \code{FamiliasLocus} object or a list of such.}
+
+\item{locusAttributes}{Precomputed locus attributes; defaults to conversion of \code{loci}.}
 
 \item{matchLoci}{A logical, by default FALSE. If TRUE, the column names of
 \code{datamatrix} are matched against \code{names(loci)}, or, if these are missing,
