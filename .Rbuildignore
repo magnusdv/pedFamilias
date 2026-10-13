@@ -9,3 +9,4 @@
 ^\.github$
 ^\.positai$
 ^\.claude$
+^Rprof\.out$

@@ -4,6 +4,11 @@
 
 * Added example DVI file `planecrash.fam`, available as `system.file("extdata", "planecrash.fam", package = "pedFamilias")`.
 
+* `readFam()` is better at parsing the sex of missing persons (in DVI files).
+
+* `readFam()` is noticeably faster due to various optimisations here and in **pedtools**.
+
+
 # pedFamilias 0.2.6
 
 * `readFam()` gains argument `convert`, allowing the parsed Familias data to be returned without conversion to pedsuite objects.
