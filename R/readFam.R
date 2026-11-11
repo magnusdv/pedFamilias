@@ -508,9 +508,14 @@ readFam = function(famfile, useDVI = NA, Xchrom = FALSE, prefixAdded = "added_",
     locAttrs = readFamiliasLoci(loci)
 
     res = lapply(dvi.families, function(fam) {
-      Familias2ped(familiasped = fam$pedigrees, datamatrix = fam$datamatrix,
-                   loci = loci, locusAttributes = locAttrs, matchLoci = TRUE,
-                   prefixAdded = prefixAdded)
+      p = Familias2ped(familiasped = fam$pedigrees, datamatrix = fam$datamatrix,
+                       loci = loci, locusAttributes = locAttrs, matchLoci = TRUE,
+                       prefixAdded = prefixAdded)
+
+      # TODO: Remove after dvir 3.5.1 is on CRAN
+      if(!is.ped(p) && "Reference pedigree" %in% names(p))
+        p = lapply(p, function(z) if(is.ped(z)) list(z) else z)
+      p
     })
 
     # Set all chrom attributes to X if indicated
